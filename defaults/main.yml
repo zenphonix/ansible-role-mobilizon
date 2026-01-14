@@ -212,23 +212,23 @@ mobilizon_email_smtp_ssl: true
 mobilizon_email_smtp_username: ""
 mobilizon_email_smtp_password: ""
 
-# Keycloak OAuth2 configuration (through OpenID Connect)
+# OAuth2 configuration (through OpenID Connect)
 # Other OpenID Connect providers should work with this provider as well, such as Nextcloud with the "oidc" app
-mobilizon_keycloak_oauth_enabled: false
-mobilizon_keycloak_hostname: ""
-mobilizon_keycloak_signin_label: "Keycloak"
-mobilizon_keycloak_default_scope: "openid email profile"
-mobilizon_keycloak_client_id: ""
-mobilizon_keycloak_client_secret: ""
-mobilizon_keycloak_authorize_url: ""
-mobilizon_keycloak_token_url: ""
-mobilizon_keycloak_userinfo_url: ""
+mobilizon_oidc_client_enabled: false
+mobilizon_oidc_hostname: ""
+mobilizon_oidc_signin_label: "OpenID Connect"
+mobilizon_oidc_scopes: "openid email profile"
+mobilizon_oidc_client_id: ""
+mobilizon_oidc_client_secret: ""
+mobilizon_oidc_authorize_url: ""
+mobilizon_oidc_token_url: ""
+mobilizon_oidc_userinfo_url: ""
 
 ## Configuration for the Nextcloud OIDC Provider
 # The name of the client
 mobilizon_oidc_client_name: "{{ mobilizon_identifier }}"
 # An array of redirect uris
-mobilizon_oidc_redirect_uris: "https://{{ mobilizon_hostname }}/auth/keycloak/callback"
+mobilizon_oidc_redirect_uris: "https://{{ mobilizon_hostname }}/auth/oidc/callback"
 # The signing algorithm to use. Can be ´RS256´ or ´HS256´.
 mobilizon_oidc_algorithm: "RS256"
 # The flow type to use for authentication. Can be ´code´ or ´code id_token´.
