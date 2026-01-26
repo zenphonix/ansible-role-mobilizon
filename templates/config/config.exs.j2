@@ -261,29 +261,24 @@ config :mobilizon, Mobilizon.Service.FrontEndAnalytics.Sentry,
       System.get_env("MOBILIZON_ERROR_REPORTING_SENTRY_HOST", "") |> String.split(" ", trim: true)
   ]
 
-{% if mobilizon_keycloak_oauth_enabled %}
-config :ueberauth_oidcc, :issuers, [
-  %{name: :nextcloud, issuer: "https://cloud.synkosmos.org"}
-]
-
+{% if mobilizon_oidc_client_enabled‎ %}
 config :ueberauth,
-  Ueberauth,
-  providers: [
-    keycloak: {Ueberauth.Strategy.Keycloak, [default_scope: "{{ mobilizon_keycloak_default_scope }}"]}
-    oidc: { Ueberauth.Strategy.Oidcc, [default_scope: "{{ mobilizon_keycloak_default_scope }}"],
-      issuer: :nextcloud,
-      client_id: "{{ mobilizon_keycloak_client_id }}",
-      client_secret: "{{ mobilizon_keycloak_client_secret }}",
-      scopes: ["{{ mobilizon_keycloak_default_scope }}"],
-      # optional
-      userinfo: true, # whether to pull info from the Userinfo endpoint, default: false
-      validate_scopes: true, # whether to validate the returned scopes are a subset of those request, default: false
-      uid_field: "email", # pulled from the merge of the claims and userinfo (if fetched), default: sub
-    }
-  ]
+       Ueberauth,
+       providers: [
+         oidc: {Ueberauth.Strategy.Keycloak, [default_scope: "{{ mobilizon_oidc_scopes }}"]}
+       ]
 
 config :mobilizon, :auth,
   oauth_consumer_strategies: [
-    {:oidc, "{{ mobilizon_keycloak_signin_label }}"}
+    {:oidc, "{{ mobilizon_oidc_signin_label }}"}
   ]
+
+config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
+  client_id: "{{ mobilizon_oidc_client_id }}",
+  client_secret: "{{ mobilizon_oidc_client_secret }}",
+  site: "{{ mobilizon_oidc_hostname }}",
+  authorize_url: "{{ mobilizon_oidc_authorize_url }}",
+  token_url: "{{ mobilizon_oidc_token_url }}",
+  userinfo_url: "{{ mobilizon_oidc_userinfo_url }}",
+  token_method: :post
 {% endif %}
