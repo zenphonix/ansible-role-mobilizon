@@ -40,13 +40,13 @@ mobilizon_container_repo: "https://framagit.org/kaihuri/mobilizon.git"
 mobilizon_container_repo_version: "{{ mobilizon_version if mobilizon_version != 'latest' else 'main' }}"
 mobilizon_container_src_files_path: "{{ mobilizon_base_path }}/docker-src"
 
-# Controls whether the container exposes its HTTP port (tcp/4000 in the container).
+# The base container network. It will be auto-created by this role if it doesn't exist already.
+mobilizon_container_network: "{{ mobilizon_identifier }}"
+
+# Specify how the container publishes its HTTP port (as defined by `mobilizon_container_http_port`).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 mobilizon_container_http_host_bind_port: ""
-
-# The base container network. It will be auto-created by this role if it doesn't exist already.
-mobilizon_container_network: "{{ mobilizon_identifier }}"
 
 # Port that the container will use for the web interface
 mobilizon_container_http_port: 4000
@@ -59,7 +59,7 @@ mobilizon_container_additional_networks: []
 # mobilizon_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `mobilizon_container_labels_additional_labels`.
+# To inject your own other container labels, see `mobilizon_container_labels_additional_labels_custom`.
 mobilizon_container_labels_traefik_enabled: true
 mobilizon_container_labels_traefik_docker_network: "{{ mobilizon_container_network }}"
 mobilizon_container_labels_traefik_hostname: "{{ mobilizon_hostname }}"
@@ -93,12 +93,15 @@ mobilizon_container_labels_traefik_additional_response_headers_custom: {}
 
 # mobilizon_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
 # See `../templates/labels.j2` for details.
+# To add your own custom labels, use `mobilizon_container_labels_additional_labels_custom`
 #
 # Example:
-# mobilizon_container_labels_additional_labels: |
-#   my.label=1
-#   another.label="here"
-mobilizon_container_labels_additional_labels: ""
+# mobilizon_container_labels_additional_labels_custom:
+#   - my.label=1
+#   - another.label="here"
+mobilizon_container_labels_additional_labels: "{{ mobilizon_container_labels_additional_labels_auto + mobilizon_container_labels_additional_labels_custom }}"
+mobilizon_container_labels_additional_labels_auto: []
+mobilizon_container_labels_additional_labels_custom: []
 
 # Specifies how often the container health-check will run.
 #
@@ -122,8 +125,13 @@ mobilizon_container_additional_volumes: "{{ mobilizon_container_additional_volum
 mobilizon_container_additional_volumes_auto: []
 mobilizon_container_additional_volumes_custom: []
 
-# A list of extra arguments to pass to the container
-mobilizon_container_extra_arguments: []
+# Specify the size of the container's tmpfs volume
+mobilizon_container_tmpfs_tmp_size: 128m
+
+# A list of extra arguments to pass to the container (`docker create` command)
+mobilizon_container_extra_arguments: "{{ mobilizon_container_extra_arguments_auto + mobilizon_container_extra_arguments_custom }}"
+mobilizon_container_extra_arguments_auto: []
+mobilizon_container_extra_arguments_custom: []
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
@@ -224,5 +232,7 @@ mobilizon_keycloak_authorize_url: ""
 mobilizon_keycloak_token_url: ""
 mobilizon_keycloak_userinfo_url: ""
 
+# Specify the timezone
+mobilizon_environment_variables_tz: UTC
 # Additional environment variables.
 mobilizon_environment_variables_additional_variables: ""
