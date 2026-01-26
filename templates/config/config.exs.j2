@@ -261,7 +261,7 @@ config :mobilizon, Mobilizon.Service.FrontEndAnalytics.Sentry,
       System.get_env("MOBILIZON_ERROR_REPORTING_SENTRY_HOST", "") |> String.split(" ", trim: true)
   ]
 
-{% if mobilizon_keycloak_oauth_enabled %}
+{% if mobilizon_oidc_client_enabled %}
 config :ueberauth_oidcc, :issuers, [
   %{name: :nextcloud, issuer: "https://cloud.synkosmos.org"}
 ]
