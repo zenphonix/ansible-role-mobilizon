@@ -236,7 +236,7 @@ mobilizon_oidc_userinfo_url: ""
 # The name of the client
 mobilizon_oidc_client_name: "{{ mobilizon_identifier }}"
 # An array of redirect uris
-mobilizon_oidc_redirect_uris: "https://{{ mobilizon_hostname }}/auth/oidc/callback"
+mobilizon_oidc_redirect_uris: "https://{{ mobilizon_hostname }}/auth/keycloak/callback"
 # The signing algorithm to use. Can be ´RS256´ or ´HS256´.
 mobilizon_oidc_algorithm: "RS256"
 # The flow type to use for authentication. Can be ´code´ or ´code id_token´.
@@ -251,8 +251,6 @@ mobilizon_oidc_token_type: "opaque"
 mobilizon_oidc_email_regex: ""
 # The resource URL for this client (RFC 9728). Must be a valid URL with max length 512 characters.
 mobilizon_oidc_resource_url: null
-# Dynamic Client Registration (RFC 7591). Disabled by default. Must be enabled in settings.
-mobilizon_oidc_dcr: false
 
 # Specify the timezone
 mobilizon_environment_variables_tz: UTC
