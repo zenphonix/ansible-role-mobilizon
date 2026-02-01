@@ -28,38 +28,38 @@
     - env
     - labels
 
-- name: Ensure Mobilizon oidc.exs is installed
-  when: mobilizon_oidc_client_enabled | bool
-  ansible.builtin.template:
-    src: "{{ role_path }}/templates/config/oidc.exs.j2"
-    dest: "{{ mobilizon_config_path }}/oidc.exs"
-    mode: "0640"
-    owner: "{{ mobilizon_uid }}"
-    group: "{{ mobilizon_gid }}"
-
 - name: Ensure Mobilizon image is pulled
   community.docker.docker_image:
     name: "{{ mobilizon_container_image }}"
     source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
   when: "not mobilizon_container_image_self_build | bool"
 
-- name: Extract Mobilizon config.exs from container image
+- name: Modify Mobilizon config.exs file
   when: mobilizon_oidc_client_enabled | bool
   block:
     - name: Start Mobilizon container
       community.docker.docker_container:
-        name: "{{ mobilizon_identifier }}"
+        name: "mobilizon_image"
         image: "{{ mobilizon_container_image }}"
         state: started
 
     - name: Copy config.exs from running container
-      command: docker cp {{ mobilizon_identifier }}:/etc/mobilizon/config.exs /mash/mobilizon/config/config.exs
+      command: docker cp mobilizon_image:/etc/mobilizon/config.exs /mash/mobilizon/config/config.exs
       changed_when: true
 
     - name: Stop Mobilizon container
       community.docker.docker_container:
-        name: "{{ mobilizon_identifier }}"
+        name: "mobilizon_image"
         state: stopped
+
+    - name: Ensure Mobilizon oidc.exs is installed
+      when: mobilizon_oidc_client_enabled | bool
+      ansible.builtin.template:
+        src: "{{ role_path }}/templates/config/oidc.exs.j2"
+        dest: "{{ mobilizon_config_path }}/oidc.exs"
+        mode: "0640"
+        owner: "{{ mobilizon_uid }}"
+        group: "{{ mobilizon_gid }}"
 
     - name: Append oidc.exs to config.exs
       ansible.builtin.assemble:
