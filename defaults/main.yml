@@ -234,5 +234,6 @@ mobilizon_oidc_userinfo_url: ""
 
 # Specify the timezone
 mobilizon_environment_variables_tz: UTC
+
 # Additional environment variables.
 mobilizon_environment_variables_additional_variables: ""
