@@ -227,6 +227,9 @@ mobilizon_email_smtp_password: ""
 # OAuth2 configuration (through OpenID Connect)
 # Other OpenID Connect providers should work with this provider as well, such as Nextcloud with the "oidc" app
 mobilizon_oidc_client_enabled: false
+mobilizon_oidc_client_name: "{{ mobilizon_identifier }}"
+mobilizon_oidc_redirect_uris: "https://{{ mobilizon_hostname }}/auth/keycloak/callback"
+
 mobilizon_oidc_provider_name: "OpenID Connect"
 mobilizon_oidc_client_id: ""
 mobilizon_oidc_client_secret: ""
